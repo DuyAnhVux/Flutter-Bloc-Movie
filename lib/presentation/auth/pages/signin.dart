@@ -11,31 +11,34 @@ class SigninPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        minimum: const EdgeInsets.only(top: 100, left: 16, right: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _signinText(),
-            const SizedBox(
-              height: 64,
-            ),
-            _emailTextField(),
-            const SizedBox(
-              height: 16,
-            ),
-            _passwordTextField(),
-            const SizedBox(
-              height: 32,
-            ),
-            _signinButton(context),
-            const SizedBox(
-              height: 16,
-            ),
-            _signupText(context)
-          ],
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        body: SafeArea(
+          minimum: const EdgeInsets.only(top: 100, left: 16, right: 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _signinText(),
+              const SizedBox(
+                height: 64,
+              ),
+              _emailTextField(),
+              const SizedBox(
+                height: 16,
+              ),
+              _passwordTextField(),
+              const SizedBox(
+                height: 32,
+              ),
+              _signinButton(context),
+              const SizedBox(
+                height: 16,
+              ),
+              _signupText(context)
+            ],
+          ),
         ),
       ),
     );
@@ -84,7 +87,7 @@ class SigninPage extends StatelessWidget {
           style: const TextStyle(color: Colors.blue),
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              AppNavigator.push(context, const SignupPage());
+              AppNavigator.push(context, SignupPage());
             })
     ]));
   }

@@ -2,44 +2,53 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_app/common/helper/navigation/app_navigation.dart';
 import 'package:flutter_movie_app/core/configs/theme/app_colors.dart';
+import 'package:flutter_movie_app/data/auth/models/signup_req_params.dart';
+import 'package:flutter_movie_app/domain/auth/usecases/signup.dart';
 import 'package:flutter_movie_app/presentation/auth/pages/signin.dart';
 import 'package:flutter_movie_app/presentation/home/pages/home.dart';
+import 'package:flutter_movie_app/service_locator.dart';
 import 'package:reactive_button/reactive_button.dart';
 
 class SignupPage extends StatelessWidget {
-  const SignupPage({super.key});
+  SignupPage({super.key});
+
+  final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _passwordCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        minimum: const EdgeInsets.only(top: 100, left: 16, right: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _signupText(),
-            const SizedBox(
-              height: 64,
-            ),
-            _emailTextField(),
-            const SizedBox(
-              height: 16,
-            ),
-            _passwordTextField(),
-            const SizedBox(
-              height: 16,
-            ),
-            _passwordRetypeTextField(),
-            const SizedBox(
-              height: 32,
-            ),
-            _signupButton(context),
-            const SizedBox(
-              height: 16,
-            ),
-            _signinText(context)
-          ],
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        body: SafeArea(
+          minimum: const EdgeInsets.only(top: 100, left: 16, right: 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _signupText(),
+              const SizedBox(
+                height: 64,
+              ),
+              _emailTextField(),
+              const SizedBox(
+                height: 16,
+              ),
+              _passwordTextField(),
+              const SizedBox(
+                height: 16,
+              ),
+              // _passwordRetypeTextField(),
+              // const SizedBox(
+              //   height: 32,
+              // ),
+              _signupButton(context),
+              const SizedBox(
+                height: 16,
+              ),
+              _signinText(context)
+            ],
+          ),
         ),
       ),
     );
@@ -53,31 +62,37 @@ class SignupPage extends StatelessWidget {
   }
 
   Widget _emailTextField() {
-    return const TextField(
-        decoration: InputDecoration(
-      hintText: 'Email',
-    ));
+    return TextField(
+        controller: _emailCtrl,
+        decoration: const InputDecoration(
+          hintText: 'Email',
+        ));
   }
 
   Widget _passwordTextField() {
-    return const TextField(
-        decoration: InputDecoration(
-      hintText: 'Password',
-    ));
+    return TextField(
+        controller: _passwordCtrl,
+        decoration: const InputDecoration(
+          hintText: 'Password',
+        ));
   }
 
-  Widget _passwordRetypeTextField() {
-    return const TextField(
-        decoration: InputDecoration(
-      hintText: 'Password retype',
-    ));
-  }
+  // Widget _passwordRetypeTextField() {
+  //   return const TextField(
+  //       decoration: InputDecoration(
+  //     hintText: 'Password retype',
+  //   ));
+  // }
 
   Widget _signupButton(BuildContext context) {
     return ReactiveButton(
       title: 'Sign Up',
       activeColor: AppColors.primary,
-      onPressed: () async {},
+      onPressed: () async {
+        await slGetIt<SignupUseCase>().call(
+            params: SignupReqParams(
+                email: _emailCtrl.text, password: _passwordCtrl.text));
+      },
       onSuccess: () {
         AppNavigator.pushAndRemove(context, const HomePage());
       },
