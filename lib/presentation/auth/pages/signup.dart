@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movie_app/common/helper/message/display_message.dart';
 import 'package:flutter_movie_app/common/helper/navigation/app_navigation.dart';
 import 'package:flutter_movie_app/core/configs/theme/app_colors.dart';
 import 'package:flutter_movie_app/data/auth/models/signup_req_params.dart';
@@ -88,16 +89,14 @@ class SignupPage extends StatelessWidget {
     return ReactiveButton(
       title: 'Sign Up',
       activeColor: AppColors.primary,
-      onPressed: () async {
-        await slGetIt<SignupUseCase>().call(
-            params: SignupReqParams(
-                email: _emailCtrl.text, password: _passwordCtrl.text));
-      },
+      onPressed: () async => slGetIt<SignupUseCase>().call(
+          params: SignupReqParams(
+              email: _emailCtrl.text, password: _passwordCtrl.text)),
       onSuccess: () {
         AppNavigator.pushAndRemove(context, const HomePage());
       },
       onFailure: (error) {
-        // DisplayMessage.errorMessage(error, context);
+        DisplayMessage.errorMessage(error, context);
       },
     );
   }
@@ -110,7 +109,7 @@ class SignupPage extends StatelessWidget {
           style: const TextStyle(color: Colors.blue),
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              AppNavigator.push(context, const SigninPage());
+              AppNavigator.push(context, SigninPage());
             })
     ]));
   }

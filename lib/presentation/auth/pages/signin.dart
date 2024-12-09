@@ -1,13 +1,20 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movie_app/common/helper/message/display_message.dart';
 import 'package:flutter_movie_app/common/helper/navigation/app_navigation.dart';
 import 'package:flutter_movie_app/core/configs/theme/app_colors.dart';
+import 'package:flutter_movie_app/data/auth/models/signin_req_params.dart';
+import 'package:flutter_movie_app/domain/auth/usecases/signin.dart';
 import 'package:flutter_movie_app/presentation/auth/pages/signup.dart';
 import 'package:flutter_movie_app/presentation/home/pages/home.dart';
+import 'package:flutter_movie_app/service_locator.dart';
 import 'package:reactive_button/reactive_button.dart';
 
 class SigninPage extends StatelessWidget {
-  const SigninPage({super.key});
+  SigninPage({super.key});
+
+  final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _passwordCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,29 +59,33 @@ class SigninPage extends StatelessWidget {
   }
 
   Widget _emailTextField() {
-    return const TextField(
-        decoration: InputDecoration(
-      hintText: 'Email',
-    ));
+    return TextField(
+        controller: _emailCtrl,
+        decoration: const InputDecoration(
+          hintText: 'Email',
+        ));
   }
 
   Widget _passwordTextField() {
-    return const TextField(
-        decoration: InputDecoration(
-      hintText: 'Password',
-    ));
+    return TextField(
+        controller: _passwordCtrl,
+        decoration: const InputDecoration(
+          hintText: 'Password',
+        ));
   }
 
   Widget _signinButton(BuildContext context) {
     return ReactiveButton(
       title: 'Sign In',
       activeColor: AppColors.primary,
-      onPressed: () async {},
+      onPressed: () async => slGetIt<SigninUseCase>().call(
+          params: SigninReqParams(
+              email: _emailCtrl.text, password: _passwordCtrl.text)),
       onSuccess: () {
         AppNavigator.pushAndRemove(context, const HomePage());
       },
       onFailure: (error) {
-        // DisplayMessage.errorMessage(error, context);
+        DisplayMessage.errorMessage(error, context);
       },
     );
   }
