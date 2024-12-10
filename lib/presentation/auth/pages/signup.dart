@@ -15,6 +15,7 @@ class SignupPage extends StatelessWidget {
 
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
+  final TextEditingController _passwordRetypeCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +40,10 @@ class SignupPage extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              // _passwordRetypeTextField(),
-              // const SizedBox(
-              //   height: 32,
-              // ),
+              _passwordRetypeTextField(),
+              const SizedBox(
+                height: 32,
+              ),
               _signupButton(context),
               const SizedBox(
                 height: 16,
@@ -78,25 +79,33 @@ class SignupPage extends StatelessWidget {
         ));
   }
 
-  // Widget _passwordRetypeTextField() {
-  //   return const TextField(
-  //       decoration: InputDecoration(
-  //     hintText: 'Password retype',
-  //   ));
-  // }
+  Widget _passwordRetypeTextField() {
+    return TextField(
+        controller: _passwordRetypeCtrl,
+        decoration: const InputDecoration(
+          hintText: 'Retype password',
+        ));
+  }
 
   Widget _signupButton(BuildContext context) {
     return ReactiveButton(
       title: 'Sign Up',
       activeColor: AppColors.primary,
-      onPressed: () async => slGetIt<SignupUseCase>().call(
-          params: SignupReqParams(
-              email: _emailCtrl.text, password: _passwordCtrl.text)),
+      onPressed: () async => _passwordCtrl.text == _passwordRetypeCtrl.text
+          ? slGetIt<SignupUseCase>().call(
+              params: SignupReqParams(
+                  email: _emailCtrl.text, password: _passwordCtrl.text))
+          : null,
       onSuccess: () {
         AppNavigator.pushAndRemove(context, const HomePage());
       },
       onFailure: (error) {
-        DisplayMessage.errorMessage(error, context);
+        if (_passwordCtrl.text == _passwordRetypeCtrl.text) {
+          DisplayMessage.errorMessage(error, context);
+        } else {
+          DisplayMessage.errorMessage(
+              'Password and password retype are different!', context);
+        }
       },
     );
   }
